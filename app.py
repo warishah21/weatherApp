@@ -1,5 +1,6 @@
 import streamlit as st
 import hopsworks
+import os
 
 api_key = st.secrets["API_KEY_HOPSWORKS"]
 project = hopsworks.login(api_key_value=os.environ["API_KEY_HOPSWORKS"])
