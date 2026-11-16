@@ -52,25 +52,3 @@ def main():
 if __name__ == "__main__":
     main()
     
-
-# def fetch_aqicn():
-#     req = requests.get(f"https://api.waqi.info/feed/{city}/", params={"token":AQICN_KEY}, timeout=15)
-#     req.raise_for_status()
-#     return req.json()
-
-# def fetch_openweather():
-#     base = "https://api.openweathermap.org/data/2.5" 
-#     p = {"lat": latitude, "lon":longitude, "appid": OPENWEATHER_KEY, "units": "metric" }
-#     w = requests.get(f"{base}/weather", params=p, timeout=15)
-#     a = requests.get(f"{base}/air_pollution", params=p, timeout=15)
-#     w.raise_for_status();
-#     a.raise_for_status()
-#     return w.json(),a.json()
-
-# if __name__ == "__main__":
-#     weather, air_pollution = fetch_openweather()
-#     aqicn = fetch_aqicn()
-#     print(datetime.now(timezone.utc))
-#     print("weather:", weather["main"]["temp"],"Humidity", weather["main"]["humidity"])
-#     print("opwn weagther air quality",air_pollution["list"][0]["main"]["aqi"])
-#     print("aqicn weather", aqicn["status"], "aqi",aqicn["data"]["aqi"])
