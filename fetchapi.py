@@ -1,5 +1,7 @@
+import http
 import os , requests
 from datetime import datetime, timezone
+import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,25 +32,14 @@ def get_aqicn_airquality():
         raise ValueError("AQICN data not reachable")
     return result
 
-def main():
-    openweather_weather = get_openweather_weather()
-    openweather_aq = get_openweather_airquality()
-    aqicn = get_aqicn_airquality()
-    
-    weather = openweather_weather["main"]["temp"]
-    humidity = openweather_weather["main"]["humidity"]
-    openweather_aqi = openweather_aq["list"][0]["main"]["aqi"]
-    aqi_status = aqicn["data"]["aqi"]
-
-    print(datetime.now(timezone.utc))
-    
-    print(city_name.title())
-    print("Temperature:", weather, "°C")
-    print("Humidity:", humidity, "%")
-    print("OpenWeather Air Quality Index:", openweather_aqi)
-    print("AQICN Air Quality Index:", aqi_status)
+def get_openmeteo():
+    """Third source: UV index and rain Probabliilty for current time."""
+    api_link = "https://api.open-meteo.com/v1/forecast"
+    parameter = {"latitude": latitude, "longitude":longitude, "hourly": "uv_index,precipitation_probability", "forecast_days": 1,"timezone":"UTC"}
+    data = get_data(api_link,parameter)
+    hourly = data["hourly"]
+    now = pd.Timestamp.now(tz="UTC").floor("h").strftime("%Y-%m-%dT%H:00")
+    index = hourly["time"].index(now)
+    return {"uv_index": hourly["uv_index"][index], "rain_probab": hourly["precipitation_probability"][index]}
 
 
-if __name__ == "__main__":
-    main()
-    
