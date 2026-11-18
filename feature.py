@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 #converting us and pm2.5 scale to an array(chi,ihi,ilo,cho) => (uppper PM2.5 concentration, lower aqi value, upper aqivalue, lower PM2,5 concentration)
