@@ -17,11 +17,19 @@ def get_featureGroup(feature_store):
     features = feature_store.get_or_create_feature_group(name="weather_features",version=1,primary_key=["timestamp"],event_time="timestamp",time_travel_format="HUDI")
     return raw_features,features
 
-def match_database_schema(feature,data):
-    for f in feature.features:
-        if feature.name in data.columns and f.type in ("double","float"):
-            data[feature.name] = data[feature.name].astype("float64")
-        return data
+def match_database_schema(feature_group, data):
+    for f in feature_group.columns:
+        if f.name in data.columns:
+            if f.type == "double":
+                data[f.name] = data[f.name].astype("float64")
+            elif f.type == "float":
+                data[f.name] = data[f.name].astype("float32")
+            elif f.type == "bigint":
+                data[f.name] = data[f.name].astype("int64")
+            elif f.type == "int":
+                data[f.name] = data[f.name].astype("int32")
+    return data
+
 
 def run():
     feature_Store = get_featurestore()
