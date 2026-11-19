@@ -27,8 +27,8 @@ jobs:
           cache: pip
           cache-dependency-path:requirement2.txt
 
-       - name: Install dependencies
-         run: pip install -r requirement2.txt
-       - name: Pipeline Run 
-         run: python store.py
+      - name: Install dependencies
+        run: pip install -r requirement2.txt
+      - name: Pipeline Run 
+        run: python store.py
         
