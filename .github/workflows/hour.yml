@@ -1,4 +1,4 @@
-name = Hour Pipeline
+name: Hour Pipeline
 
 on:
   schedule:
