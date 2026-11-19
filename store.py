@@ -17,8 +17,15 @@ def get_featureGroup(feature_store):
     features = feature_store.get_or_create_feature_group(name="weather_features",version=1,primary_key=["timestamp"],event_time="timestamp",time_travel_format="HUDI")
     return raw_features,features
 
+def match_database_schema(feature,data):
+    for f in feature.features:
+        if feature.name in data.columns and f.type in ("double","float"):
+            data[feature.name] = data[feature.name].astype("float64")
+        return data
+
 def run():
     feature_Store = get_featurestore()
+
     raw_Features, features = get_featureGroup(feature_Store)
     weather = get_openweather_weather()
     openweather_aq = get_openweather_airquality()
@@ -26,7 +33,7 @@ def run():
     openmeteo_data = get_openmeteo()
 
     data = pd.DataFrame([add_data_to_row(weather,openweather_aq,aqicn_data,openmeteo_data)])
-    raw_Features.insert(data, wait=True)
+    raw_Features.insert(match_database_schema(raw_Features,data), wait=True)
 
     try:
         history = raw_Features.read()
@@ -34,7 +41,8 @@ def run():
     except Exception:
         history = data
     df = adding_features(cleaning_data(history))
-    features.insert(df.tail(1))
+    features.insert(match_database_schema(features,df.tail(1).copy()), wait=True)
+
 
 if __name__ == "__main__":
     run()
