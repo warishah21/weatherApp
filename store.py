@@ -20,14 +20,16 @@ def get_featureGroup(feature_store):
 def match_database_schema(feature_group, data):
     for f in feature_group.columns:
         if f.name in data.columns:
-            if f.type == "double":
-                data[f.name] = data[f.name].astype("float64")
+            if f.type == "timestamp":
+                data[f.name] = pd.to_datetime(data[f.name], utc=True)
+            elif f.type == "double":
+                data[f.name] = pd.to_numeric(data[f.name], errors="coerce").astype("float64")
             elif f.type == "float":
-                data[f.name] = data[f.name].astype("float32")
+                data[f.name] = pd.to_numeric(data[f.name], errors="coerce").astype("float32")
             elif f.type == "bigint":
-                data[f.name] = data[f.name].astype("int64")
+                data[f.name] = pd.to_numeric(data[f.name], errors="coerce").astype("Int64")
             elif f.type == "int":
-                data[f.name] = data[f.name].astype("int32")
+                data[f.name] = pd.to_numeric(data[f.name], errors="coerce").astype("Int32")
     return data
 
 
@@ -44,8 +46,9 @@ def run():
     raw_Features.insert(match_database_schema(raw_Features,data), wait=True)
 
     try:
-        history = raw_Features.read()
-        history = history[history["timestamp"]>=data["timestamp"].iloc[0]-pd.Timedelta(hours=48)]
+        history["timestamp"] = pd.to_datetime(history["timestamp"], utc=True)
+        cutoff = pd.to_datetime(data["timestamp"].iloc[0], utc=True) - pd.Timedelta(hours=48)
+        history = history[history["timestamp"] >= cutoff]
     except Exception:
         history = data
     df = adding_features(cleaning_data(history))
