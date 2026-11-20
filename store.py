@@ -25,7 +25,7 @@ def type_fix(data):
         if c == "timestamp":
             data[c] = pd.to_datetime(data[c],utc=True)
         elif c in Cols: 
-            data[c] = pd.to_numeric(data[c], erros="coerce").astype("Int64")
+            data[c] = pd.to_numeric(data[c], errors="coerce").astype("Int64")
         elif pd.api.types.is_bool_dtype(data[c]) or pd.api.types.is_datetime64_any_dtype(data[c]):
             continue
         else:
