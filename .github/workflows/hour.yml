@@ -9,12 +9,6 @@ jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env: 
-      API_KEY_HOPSWORKS: ${{ secrets.API_KEY_HOPSWORKS }}
-      OPEN_WEATHER_API: ${{ secrets.OPEN_WEATHER_API }}
-      AQICN_KEY: ${{ secrets.AQICN_KEY }}
-      GROQ_KEY: ${{ secrets.GROQ_KEY }}
-
 
     steps:
       - name: Repository
@@ -27,7 +21,12 @@ jobs:
           cache-dependency-path: requirement2.txt
 
       - name: Install dependencies
-        run: pip install -r requirement2.txt
+        run: pip install -r requirement-workflow.txt
       - name: Pipeline Run 
         run: python store.py
+        env: 
+          API_KEY_HOPSWORKS: ${{ secrets.API_KEY_HOPSWORKS }}
+          OPEN_WEATHER_API: ${{ secrets.OPEN_WEATHER_API }}
+          AQICN_KEY: ${{ secrets.AQICN_KEY }}
+          GROQ_KEY: ${{ secrets.GROQ_KEY }}
         
