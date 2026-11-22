@@ -59,7 +59,11 @@ def run():
     weather = get_openweather_weather()
     openweather_aq = get_openweather_airquality()
     aqicn_data = get_aqicn_airquality()
-    openmeteo_data = get_openmeteo()
+    try:
+        openmeteo_data = get_openmeteo()
+    except Exception as e:
+        print(f"Open meteo failed : {e}")
+        openmeteo_data = None
 
     data = pd.DataFrame([add_data_to_row(weather,openweather_aq,aqicn_data,openmeteo_data)])
     raw_Features.insert(match_database_schema(raw_Features,data), wait=True)
